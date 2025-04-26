@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Ultimate Fun Page</title>
+  <style>
+    /* Reset & Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #FFEC99, #FFD166, #FFA500);
+      animation: bgTransition 10s infinite alternate ease-in-out;
+      color: #000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.5s, color 0.5s;
+      position: relative;
+    }
+    @keyframes bgTransition {
+      0% { background-position: left top; }
+      100% { background-position: right bottom; }
+    }
+    .dark-mode {
+      background: #222;
+      color: #eee;
+    }
+    .anime-theme {
+      background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+      color: #4a4a4a;
+    }
+    /* Header & Intro */
+    header {
+      text-align: center;
+      margin: 20px 0;
+    }
+    header h1 {
+      font-size: 40px;
+      color: blue;
+      margin-bottom: 10px;
+    }
+    .animated-text {
+      font-size: 28px;
+      color: blue;
+      margin-bottom: 20px;
+    }
+    /* Button Containers */
+    .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    a, button {
+      background-color: #ff5733;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    a:hover, button:hover {
+      background-color: #ff3500;
+      transform: scale(1.05);
+    }
+    /* Fun Fact & Anime Recommendation */
+    #funFact, #anime-card {
+      font-size: 20px;
+      margin: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    #anime-card {
+      display: none;
+      background: white;
+      width: 300px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    }
+    /* Media Container (One Piece logo removed) */
+    .media-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      width: 90%;
+      max-width: 1000px;
+      overflow-x: auto;
+    }
+    .media-item {
+      width: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .media-item img,
+    .media-item iframe {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      object-fit: contain;
+    }
+    /* Trivia Quiz Section */
+    #quizSection {
+      width: 90%;
+      max-width: 600px;
+      background: #f9f9f9;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      margin: 20px 0;
+      padding: 20px;
+      text-align: center;
+    }
+    #quizSection input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 70%;
+      margin-bottom: 10px;
+    }
+    #quizSection button {
+      margin: 10px;
+    }
+    #quizQuestion {
+      font-size: 20px;
+      margin-bottom: 10px;
+      min-height: 40px;
+    }
+    #quizOptions button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+    #scoreDisplay {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    /* Leaderboard Section */
+    #leaderboardSection {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+    #leaderboardSection table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    #leaderboardSection th, #leaderboardSection td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    #leaderboardSection th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    /* Chat Bot Section */
+    #chatContainer {
+      position: fixed;
+      bottom: 0;
+      right: 20px;
+      width: 300px;
+      max-height: 400px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+    }
+    #chatHeader {
+      background: #ff5733;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px 10px 0 0;
+    }
+    #chatBody {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    #chatInputContainer {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #chatInput {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      font-size: 14px;
+    }
+    #chatSend {
+      padding: 10px;
+      background: #ff5733;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    /* Best Score Sidebar */
+    #bestScoreSidebar {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 2px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      text-align: center;
+    }
+    #bestScoreSidebar h4 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    #bestScoreSidebar p {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 600px) {
+      .btn-container {
+        flex-direction: column;
+      }
+      .media-container {
+        flex-wrap: wrap;
+      }
+      #bestScoreSidebar {
+        left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Best Score Sidebar -->
+  <div id="bestScoreSidebar">
+    <h4>Your Best Score</h4>
+    <p id="bestScoreValue">0</p>
+  </div>
+
+  <!-- Continuous Background Music (Hidden Controls) -->
+  <audio id="bgMusic" autoplay loop preload="auto" style="display:none;">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Header & Theme Toggle -->
+  <header>
+    <h1>Welcome to the Most Entertaining Page Ever! 🎉</h1>
+    <div class="animated-text">This is the best page in the world</div>
+    <div class="btn-container">
+      <button onclick="toggleMode()">Toggle Dark Mode</button>
+      <select id="themeSelect" onchange="changeTheme()">
+        <option value="light">Light Theme</option>
+        <option value="dark">Dark Theme</option>
+        <option value="anime">Anime Theme</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Interactive Entertainment Links -->
+  <div class="btn-container">
+    <a href="https://www.google.com/search?q=happy+birthday" target="_blank">Birthday</a>
+    <a href="https://neal.fun/" target="_blank">Bored?</a>
+    <a href="https://www.roblox.com" target="_blank">Roblox</a>
+    <a href="https://www.youtube.com" target="_blank">YouTube</a>
+    <a href="https://aniwatch.tv.in/" target="_blank">Anime</a>
+  </div>
+
+  <!-- Fun Fact Generator -->
+  <div id="funFact"></div>
+
+  <!-- Anime Recommendation Section -->
+  <div class="btn-container">
+    <button onclick="getAnime()">Get a Random Anime Recommendation!</button>
+  </div>
+  <div id="anime-card"></div>
+
+  <!-- Media Content (One Piece logo removed) -->
+  <div class="media-container">
+    <div class="media-item">
+      <iframe src="https://www.youtube.com/embed/RQHY3yRPyOo?autoplay=1&mute=1&loop=1&playlist=RQHY3yRPyOo" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="media-item">
+      <img src="https://static.vecteezy.com/system/resources/previews/014/763/994/original/happy-birthday-to-you-background-with-balloons-confetti-birthday-hat-and-birthday-cake-in-blue-and-white-suitable-for-greeting-card-banner-social-media-post-poster-etc-illustration-vector.jpg" alt="Happy Birthday">
+    </div>
+    <div class="media-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube Logo">
+    </div>
+  </div>
+
+  <!-- Trivia Quiz Section -->
+  <div id="quizSection">
+    <h3>Trivia Quiz</h3>
+    <!-- Player Intro -->
+    <div id="playerIntro">
+      <input type="text" id="playerName" placeholder="Enter your name" />
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+    <!-- Quiz Game (hidden until quiz starts) -->
+    <div id="quizGame" style="display:none;">
+      <div id="quizQuestion"></div>
+      <div id="quizOptions"></div>
+      <div id="scoreDisplay">Current Score: 0 | Best Score: 0</div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Section -->
+  <div id="leaderboardSection">
+    <h3>Leaderboard</h3>
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Live Chat Bot Section -->
+  <div id="chatContainer">
+    <div id="chatHeader">Chat with Us!</div>
+    <div id="chatBody"></div>
+    <div id="chatInputContainer">
+      <input id="chatInput" type="text" placeholder="Type your message..." />
+      <button id="chatSend" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    /* -----------------------------
+       Global Variables for Quiz
+    ------------------------------*/
+    let quizQuestions = [];
+    let currentQuestionIndex = 0;
+    let currentScore = 0;
+    // Retrieve player's best score from localStorage (if exists)
+    let playerBestScore = parseInt(localStorage.getItem("playerBestScore") || "0");
+    let playerName = "";
+    // Retrieve leaderboard from localStorage (if exists)
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+
+    // Generate 100 questions (50 Math and 50 Geography)
+    function generateQuizQuestions() {
+      quizQuestions = [];
+      // Generate 50 Math Questions (harder: What is i x (i+2)?)
+      for (let i = 1; i <= 50; i++) {
+        let correctAnswer = i * (i + 2);
+        let optionA = correctAnswer;
+        let optionB = correctAnswer + 2; 
+        let optionC = correctAnswer - 2; 
+        let optionD = correctAnswer + 4;
+        if (optionC < 0) optionC = correctAnswer + 1;
+        let options = [optionA, optionB, optionC, optionD];
+        options.sort(() => Math.random() - 0.5);
+        quizQuestions.push({
+          question: "Math Question " + i + ": What is " + i + " x " + (i + 2) + "?",
+          options: options.map(opt => opt.toString()),
+          correct: correctAnswer.toString()
+        });
+      }
+
+      // Define a pool of 10 Geography Questions
+      const geographyPool = [
+        {
+          question: "What is the capital of France?",
+          options: ["Paris", "London", "Berlin", "Madrid"],
+          correct: "Paris"
+        },
+        {
+          question: "Which country has the largest population in the world?",
+          options: ["China", "India", "USA", "Indonesia"],
+          correct: "China"
+        },
+        {
+          question: "Which continent is the Sahara Desert located on?",
+          options: ["Africa", "Asia", "Australia", "South America"],
+          correct: "Africa"
+        },
+        {
+          question: "What is the longest river in the world?",
+          options: ["Nile", "Amazon", "Yangtze", "Mississippi"],
+          correct: "Nile"
+        },
+        {
+          question: "Which US state is known as the 'Sunshine State'?",
+          options: ["Florida", "California", "Texas", "Arizona"],
+          correct: "Florida"
+        },
+        {
+          question: "Mount Everest is located on the border of which two countries?",
+          options: ["Nepal & China", "India & China", "Nepal & India", "Bhutan & China"],
+          correct: "Nepal & China"
+        },
+        {
+          question: "Which country is famous for its fjords?",
+          options: ["Norway", "Sweden", "Finland", "Denmark"],
+          correct: "Norway"
+        },
+        {
+          question: "What is the smallest country in the world by area?",
+          options: ["Vatican City", "Monaco", "Nauru", "San Marino"],
+          correct: "Vatican City"
+        },
+        {
+          question: "Which desert is the largest hot desert in the world?",
+          options: ["Sahara", "Gobi", "Kalahari", "Arabian"],
+          correct: "Sahara"
+        },
+        {
+          question: "Which country has the most natural lakes?",
+          options: ["Canada", "USA", "Russia", "India"],
+          correct: "Canada"
+        }
+      ];
+
+      // Generate 50 Geography Questions by cycling through the pool.
+      for (let j = 1; j <= 50; j++) {
+        let geo = geographyPool[(j - 1) % geographyPool.length];
+        quizQuestions.push({
+          question: "Geography Question " + j + ": " + geo.question,
+          options: geo.options.slice(),
+          correct: geo.correct
+        });
+      }
+      // Shuffle the 100 questions
+      quizQuestions.sort(() => Math.random() - 0.5);
+    }
+
+    function startQuiz() {
+      playerName = document.getElementById("playerName").value.trim();
+      if (!playerName) {
+        alert("Please enter your name to start the quiz.");
+        return;
+      }
+      generateQuizQuestions();
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      document.getElementById("playerIntro").style.display = "none";
+      document.getElementById("quizGame").style.display = "block";
+      updateScoreDisplay();
+      displayQuestion();
+    }
+
+    function displayQuestion() {
+      if (currentQuestionIndex >= quizQuestions.length) {
+        alert("Congratulations, " + playerName + "! You answered all questions!");
+        updateLeaderboard();
+        resetQuiz();
+        return;
+      }
+      let q = quizQuestions[currentQuestionIndex];
+      document.getElementById("quizQuestion").innerText = q.question;
+      let optionsDiv = document.getElementById("quizOptions");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(option => {
+        let btn = document.createElement("button");
+        btn.innerText = option;
+        btn.onclick = function() { answerQuestion(option); };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function answerQuestion(selected) {
+      let q = quizQuestions[currentQuestionIndex];
+      if (selected === q.correct) {
+        currentScore += 100;
+        currentQuestionIndex++;
+        updateScoreDisplay();
+        displayQuestion();
+      } else {
+        alert("Wrong answer! Your final score: " + currentScore);
+        if (currentScore > playerBestScore) {
+          playerBestScore = currentScore;
+          localStorage.setItem("playerBestScore", playerBestScore);
+        }
+        updateLeaderboard();
+        resetQuiz();
+      }
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById("scoreDisplay").innerText =
+        "Current Score: " + currentScore + " | Best Score: " + playerBestScore;
+      updateBestScoreSidebar();
+    }
+
+    function resetQuiz() {
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      updateScoreDisplay();
+      document.getElementById("quizGame").style.display = "none";
+      document.getElementById("playerIntro").style.display = "block";
+    }
+
+    function updateLeaderboard() {
+      let existing = leaderboard.find(entry => entry.name === playerName);
+      if (existing) {
+        if (currentScore > existing.score) {
+          existing.score = currentScore;
+        }
+      } else {
+        leaderboard.push({ name: playerName, score: currentScore });
+      }
+      leaderboard.sort((a, b) => b.score - a.score);
+      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      let leaderboardBody = document.getElementById("leaderboardBody");
+      leaderboardBody.innerHTML = "";
+      leaderboard.forEach((entry, index) => {
+        let row = document.createElement("tr");
+        let rankCell = document.createElement("td");
+        rankCell.innerText = index + 1;
+        let nameCell = document.createElement("td");
+        nameCell.innerText = entry.name;
+        let scoreCell = document.createElement("td");
+        scoreCell.innerText = entry.score;
+        row.appendChild(rankCell);
+        row.appendChild(nameCell);
+        row.appendChild(scoreCell);
+        leaderboardBody.appendChild(row);
+      });
+    }
+
+    function updateBestScoreSidebar() {
+      document.getElementById("bestScoreValue").innerText = playerBestScore;
+    }
+
+    /* -----------------------------
+       Fun Fact Generator
+    ------------------------------*/
+    const funFacts = [
+      "Octopuses have three hearts.",
+      "Bananas are berries, but strawberries aren't.",
+      "Honey never spoils!",
+      "Japan has over 5 million vending machines!",
+      "A day on Venus is longer than its year.",
+      "There are more stars in the universe than grains of sand on Earth."
+    ];
+    document.getElementById("funFact").innerText =
+      funFacts[Math.floor(Math.random() * funFacts.length)];
+
+    /* -----------------------------
+       Anime Recommendation Function
+    ------------------------------*/
+    function getAnime() {
+      let animeList = [];
+      const realAnimeList = [
+        "Naruto 🍥", 
+        "Attack on Titan ⚔️", 
+        "One Piece ☠️", 
+        "Death Note 📖", 
+        "Demon Slayer 🔥", 
+        "Jujutsu Kaisen 👊",
+        "Cowboy Bebop 🚀", 
+        "Hunter x Hunter 🏹",
+        "Steins;Gate ⏳", 
+        "My Hero Academia 🦸‍♂️", 
+        "Dragon Ball Z 🔥",
+        "Bleach",
+        "Fullmetal Alchemist", 
+        "One Punch Man", 
+        "Tokyo Ghoul", 
+        "Code Geass", 
+        "Gurren Lagann", 
+        "Angel Beats",
+        "Your Lie in April", 
+        "Fruits Basket", 
+        "Black Clover", 
+        "Re:Zero", 
+        "Mob Psycho 100", 
+        "Haikyuu!!", 
+        "Kaguya-sama: Love is War", 
+        "Vinland Saga", 
+        "JoJo's Bizarre Adventure", 
+        "Fate/Zero", 
+        "The Promised Neverland", 
+        "Mushoku Tensei", 
+        "Gintama", 
+        "Erased", 
+        "Noragami"
+      ];
+      while (animeList.length < 500) {
+        animeList = animeList.concat(realAnimeList);
+      }
+      const randomAnime = animeList[Math.floor(Math.random() * animeList.length)];
+      const animeCard = document.getElementById("anime-card");
+      animeCard.innerText = "✨ You should watch: " + randomAnime + "!";
+      animeCard.style.display = "block";
+    }
+
+    /* -----------------------------
+       Chat Bot Functionality
+    ------------------------------*/
+    function getBotResponse(message) {
+      const lowerCaseMsg = message.toLowerCase();
+      if (lowerCaseMsg.includes("hi") || lowerCaseMsg.includes("hello")) {
+        return "Hello there! How can I brighten your day?";
+      } else if (lowerCaseMsg.includes("how are you")) {
+        return "I'm just a program, but I'm here and ready to chat!";
+      } else if (lowerCaseMsg.includes("bye")) {
+        return "Goodbye! Hope to chat with you again soon!";
+      } else if (lowerCaseMsg.includes("thank")) {
+        return "You're welcome! Happy to help.";
+      } else if (lowerCaseMsg.includes("your name")) {
+        return "I am your AI companion—here to spark interesting conversations!";
+      } else if (lowerCaseMsg.includes("what do you think")) {
+        return "That's a thought-provoking query. I love exploring different perspectives!";
+      } else {
+        const genericResponses = [
+          "That's certainly interesting!",
+          "Wow, tell me more about that.",
+          "Hmm, I hadn't thought of it that way. Please elaborate!",
+          "Fascinating - I appreciate your insight!",
+          "Really? I'd love to dive deeper into that."
+        ];
+        return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (message === "") return;
+      appendChat("You: " + message);
+      input.value = "";
+      setTimeout(() => { 
+        const botResponse = getBotResponse(message);
+        appendChat("Bot: " + botResponse);
+      }, 1000);
+    }
+
+    function appendChat(msg) {
+      const chatBody = document.getElementById("chatBody");
+      const para = document.createElement("p");
+      para.innerText = msg;
+      chatBody.appendChild(para);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    /* -----------------------------
+       Theme Functions
+    ------------------------------*/
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+    function changeTheme() {
+      const theme = document.getElementById("themeSelect").value;
+      document.body.classList.remove("dark-mode", "anime-theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "anime") {
+        document.body.classList.add("anime-theme");
+      }
+    }
+
+    // On page load, render leaderboard and best score from localStorage.
+    window.onload = function() {
+      renderLeaderboard();
+      updateBestScoreSidebar();
+      // Also, initialize fun fact and any other dynamic text as usual.
+      document.getElementById("funFact").innerText =
+        funFacts[Math.floor(Math.random() * funFacts.length)];
+    };
+  </script>
+</body>
+</html>
