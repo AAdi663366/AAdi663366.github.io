@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Ultimate Fun Page</title>
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     /* Reset & Global Styles */
     * {
@@ -293,7 +297,7 @@
   </div>
   <div id="anime-card"></div>
 
-  <!-- Media Content (One Piece logo removed) -->
+  <!-- Media Content -->
   <div class="media-container">
     <div class="media-item">
       <iframe src="https://www.youtube.com/embed/RQHY3yRPyOo?autoplay=1&mute=1&loop=1&playlist=RQHY3yRPyOo" frameborder="0" allowfullscreen></iframe>
@@ -348,17 +352,28 @@
   </div>
 
   <script>
+    /* Initialize Firebase */
+    var firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+      // For Firestore, databaseURL is not required.
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
     /* -----------------------------
        Global Variables for Quiz
     ------------------------------*/
     let quizQuestions = [];
     let currentQuestionIndex = 0;
     let currentScore = 0;
-    // Retrieve player's best score from localStorage (if exists)
-    let playerBestScore = parseInt(localStorage.getItem("playerBestScore") || "0");
     let playerName = "";
-    // Retrieve leaderboard from localStorage (if exists)
-    let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+    // Global leaderboard will be stored in Firestore
+    // (leaderboard is not stored in localStorage anymore)
 
     // Generate 100 questions (50 Math and 50 Geography)
     function generateQuizQuestions() {
@@ -460,12 +475,14 @@
       document.getElementById("quizGame").style.display = "block";
       updateScoreDisplay();
       displayQuestion();
+      // Update best score sidebar for current player.
+      updateBestScoreSidebar();
     }
 
     function displayQuestion() {
       if (currentQuestionIndex >= quizQuestions.length) {
         alert("Congratulations, " + playerName + "! You answered all questions!");
-        updateLeaderboard();
+        updateGlobalLeaderboard();
         resetQuiz();
         return;
       }
@@ -490,21 +507,19 @@
         displayQuestion();
       } else {
         alert("Wrong answer! Your final score: " + currentScore);
-        if (currentScore > playerBestScore) {
-          playerBestScore = currentScore;
-          localStorage.setItem("playerBestScore", playerBestScore);
-        }
-        updateLeaderboard();
+        // Update global leaderboard and best score if applicable.
+        updateGlobalLeaderboard();
         resetQuiz();
       }
     }
 
     function updateScoreDisplay() {
       document.getElementById("scoreDisplay").innerText =
-        "Current Score: " + currentScore + " | Best Score: " + playerBestScore;
+        "Current Score: " + currentScore;
       updateBestScoreSidebar();
     }
 
+    // Reset Quiz UI (does not clear global leaderboard)
     function resetQuiz() {
       currentQuestionIndex = 0;
       currentScore = 0;
@@ -513,44 +528,71 @@
       document.getElementById("playerIntro").style.display = "block";
     }
 
-    function updateLeaderboard() {
-      let existing = leaderboard.find(entry => entry.name === playerName);
-      if (existing) {
-        if (currentScore > existing.score) {
-          existing.score = currentScore;
+    // Update global leaderboard in Firestore
+    function updateGlobalLeaderboard() {
+      let playerDoc = db.collection("leaderboard").doc(playerName);
+      playerDoc.get().then(function(doc) {
+        if (doc.exists) {
+          let best = doc.data().score;
+          if (currentScore > best) {
+            // Update with new high score
+            return playerDoc.set({ score: currentScore });
+          }
+        } else {
+          return playerDoc.set({ score: currentScore });
         }
-      } else {
-        leaderboard.push({ name: playerName, score: currentScore });
-      }
-      leaderboard.sort((a, b) => b.score - a.score);
-      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-      renderLeaderboard();
-    }
-
-    function renderLeaderboard() {
-      let leaderboardBody = document.getElementById("leaderboardBody");
-      leaderboardBody.innerHTML = "";
-      leaderboard.forEach((entry, index) => {
-        let row = document.createElement("tr");
-        let rankCell = document.createElement("td");
-        rankCell.innerText = index + 1;
-        let nameCell = document.createElement("td");
-        nameCell.innerText = entry.name;
-        let scoreCell = document.createElement("td");
-        scoreCell.innerText = entry.score;
-        row.appendChild(rankCell);
-        row.appendChild(nameCell);
-        row.appendChild(scoreCell);
-        leaderboardBody.appendChild(row);
+      }).then(function() {
+        renderGlobalLeaderboard();
+        updateBestScoreSidebar();
+      }).catch(function(error) {
+        console.error("Error updating leaderboard: ", error);
       });
     }
 
+    // Render the global leaderboard by fetching documents from Firestore
+    function renderGlobalLeaderboard() {
+      db.collection("leaderboard").orderBy("score", "desc").limit(10).get()
+      .then(function(querySnapshot) {
+        let leaderboardBody = document.getElementById("leaderboardBody");
+        leaderboardBody.innerHTML = "";
+        querySnapshot.forEach(function(doc, index) {
+          let row = document.createElement("tr");
+          let rankCell = document.createElement("td");
+          rankCell.innerText = index + 1;
+          let nameCell = document.createElement("td");
+          nameCell.innerText = doc.id;
+          let scoreCell = document.createElement("td");
+          scoreCell.innerText = doc.data().score;
+          row.appendChild(rankCell);
+          row.appendChild(nameCell);
+          row.appendChild(scoreCell);
+          leaderboardBody.appendChild(row);
+        });
+      }).catch(function(error) {
+        console.error("Error rendering leaderboard: ", error);
+      });
+    }
+
+    // Update the Best Score Sidebar for the current player from Firestore
     function updateBestScoreSidebar() {
-      document.getElementById("bestScoreValue").innerText = playerBestScore;
+      if (!playerName) {
+        document.getElementById("bestScoreValue").innerText = "0";
+        return;
+      }
+      db.collection("leaderboard").doc(playerName).get()
+      .then(function(doc) {
+        if (doc.exists) {
+          document.getElementById("bestScoreValue").innerText = doc.data().score;
+        } else {
+          document.getElementById("bestScoreValue").innerText = "0";
+        }
+      }).catch(function(error) {
+        console.error("Error fetching best score: ", error);
+      });
     }
 
     /* -----------------------------
-       Fun Fact Generator
+         Fun Fact Generator
     ------------------------------*/
     const funFacts = [
       "Octopuses have three hearts.",
@@ -564,7 +606,7 @@
       funFacts[Math.floor(Math.random() * funFacts.length)];
 
     /* -----------------------------
-       Anime Recommendation Function
+         Anime Recommendation Function
     ------------------------------*/
     function getAnime() {
       let animeList = [];
@@ -613,7 +655,7 @@
     }
 
     /* -----------------------------
-       Chat Bot Functionality
+         Chat Bot Functionality
     ------------------------------*/
     function getBotResponse(message) {
       const lowerCaseMsg = message.toLowerCase();
@@ -634,7 +676,7 @@
           "That's certainly interesting!",
           "Wow, tell me more about that.",
           "Hmm, I hadn't thought of it that way. Please elaborate!",
-          "Fascinating - I appreciate your insight!",
+          "Fascinating — I appreciate your insight!",
           "Really? I'd love to dive deeper into that."
         ];
         return genericResponses[Math.floor(Math.random() * genericResponses.length)];
@@ -662,7 +704,7 @@
     }
 
     /* -----------------------------
-       Theme Functions
+         Theme Functions
     ------------------------------*/
     function toggleMode() {
       document.body.classList.toggle("dark-mode");
@@ -677,11 +719,10 @@
       }
     }
 
-    // On page load, render leaderboard and best score from localStorage.
+    // On page load, render leaderboard and best score
     window.onload = function() {
-      renderLeaderboard();
+      renderGlobalLeaderboard();
       updateBestScoreSidebar();
-      // Also, initialize fun fact and any other dynamic text as usual.
       document.getElementById("funFact").innerText =
         funFacts[Math.floor(Math.random() * funFacts.length)];
     };
