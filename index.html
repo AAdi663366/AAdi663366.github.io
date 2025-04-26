@@ -90,7 +90,7 @@
       width: 300px;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
     }
     /* Media Container (One Piece logo removed) */
     .media-container {
@@ -322,7 +322,7 @@
     <div id="quizGame" style="display:none;">
       <div id="quizQuestion"></div>
       <div id="quizOptions"></div>
-      <div id="scoreDisplay">Current Score: 0 | Best Score: 0</div>
+      <div id="scoreDisplay">Current Score: 0</div>
     </div>
   </div>
 
@@ -352,7 +352,9 @@
   </div>
 
   <script>
-    /* Initialize Firebase */
+    /* -----------------------------
+       Firebase Initialization
+    ------------------------------*/
     var firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -360,7 +362,6 @@
       storageBucket: "YOUR_PROJECT_ID.appspot.com",
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
-      // For Firestore, databaseURL is not required.
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
@@ -373,7 +374,6 @@
     let currentScore = 0;
     let playerName = "";
     // Global leaderboard will be stored in Firestore
-    // (leaderboard is not stored in localStorage anymore)
 
     // Generate 100 questions (50 Math and 50 Geography)
     function generateQuizQuestions() {
@@ -394,7 +394,6 @@
           correct: correctAnswer.toString()
         });
       }
-
       // Define a pool of 10 Geography Questions
       const geographyPool = [
         {
@@ -448,7 +447,6 @@
           correct: "Canada"
         }
       ];
-
       // Generate 50 Geography Questions by cycling through the pool.
       for (let j = 1; j <= 50; j++) {
         let geo = geographyPool[(j - 1) % geographyPool.length];
@@ -468,6 +466,8 @@
         alert("Please enter your name to start the quiz.");
         return;
       }
+      // Save player name for later use
+      localStorage.setItem("playerName", playerName);
       generateQuizQuestions();
       currentQuestionIndex = 0;
       currentScore = 0;
@@ -475,7 +475,6 @@
       document.getElementById("quizGame").style.display = "block";
       updateScoreDisplay();
       displayQuestion();
-      // Update best score sidebar for current player.
       updateBestScoreSidebar();
     }
 
@@ -507,7 +506,6 @@
         displayQuestion();
       } else {
         alert("Wrong answer! Your final score: " + currentScore);
-        // Update global leaderboard and best score if applicable.
         updateGlobalLeaderboard();
         resetQuiz();
       }
@@ -519,7 +517,7 @@
       updateBestScoreSidebar();
     }
 
-    // Reset Quiz UI (does not clear global leaderboard)
+    // Reset Quiz UI (do not clear the global leaderboard)
     function resetQuiz() {
       currentQuestionIndex = 0;
       currentScore = 0;
@@ -528,14 +526,13 @@
       document.getElementById("playerIntro").style.display = "block";
     }
 
-    // Update global leaderboard in Firestore
+    // Update the global leaderboard in Firestore
     function updateGlobalLeaderboard() {
       let playerDoc = db.collection("leaderboard").doc(playerName);
       playerDoc.get().then(function(doc) {
         if (doc.exists) {
           let best = doc.data().score;
           if (currentScore > best) {
-            // Update with new high score
             return playerDoc.set({ score: currentScore });
           }
         } else {
@@ -573,8 +570,12 @@
       });
     }
 
-    // Update the Best Score Sidebar for the current player from Firestore
+    // Update the Best Score Sidebar for the current player using Firestore data.
     function updateBestScoreSidebar() {
+      // If playerName isn't set, try to retrieve it from localStorage.
+      if (!playerName) {
+        playerName = localStorage.getItem("playerName") || "";
+      }
       if (!playerName) {
         document.getElementById("bestScoreValue").innerText = "0";
         return;
@@ -592,7 +593,7 @@
     }
 
     /* -----------------------------
-         Fun Fact Generator
+       Fun Fact Generator
     ------------------------------*/
     const funFacts = [
       "Octopuses have three hearts.",
@@ -606,7 +607,7 @@
       funFacts[Math.floor(Math.random() * funFacts.length)];
 
     /* -----------------------------
-         Anime Recommendation Function
+       Anime Recommendation Function
     ------------------------------*/
     function getAnime() {
       let animeList = [];
@@ -682,7 +683,6 @@
         return genericResponses[Math.floor(Math.random() * genericResponses.length)];
       }
     }
-
     function sendMessage() {
       const input = document.getElementById("chatInput");
       const message = input.value.trim();
@@ -694,7 +694,6 @@
         appendChat("Bot: " + botResponse);
       }, 1000);
     }
-
     function appendChat(msg) {
       const chatBody = document.getElementById("chatBody");
       const para = document.createElement("p");
@@ -719,8 +718,13 @@
       }
     }
 
-    // On page load, render leaderboard and best score
+    // On page load: if a player name is stored, set it automatically.
     window.onload = function() {
+      let storedName = localStorage.getItem("playerName");
+      if (storedName) {
+        playerName = storedName;
+        // Optionally, you can hide the input or show a welcome message.
+      }
       renderGlobalLeaderboard();
       updateBestScoreSidebar();
       document.getElementById("funFact").innerText =
