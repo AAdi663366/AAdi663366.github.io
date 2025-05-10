@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ultimate Fun Page – Enhanced Version</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Fun Page – Enhanced</title>
   <!-- Chart.js for Score History Graph -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* ========= Reset & Global Styles ========= */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --bg-color: linear-gradient(120deg, #FFEC99, #FFD166, #FFA500); }
+    :root {
+      --bg-color: linear-gradient(120deg, #FFEC99, #FFD166, #FFA500);
+    }
     body {
       font-family: Arial, sans-serif;
       background: var(--bg-color);
@@ -46,7 +48,11 @@
       padding: 8px; font-size: 16px; margin-bottom: 10px;
     }
     
-    /* ========= Sidebar & Section Styles ========= */
+    /* ========= Custom Theme & Music Picker ========= */
+    #themeColorPicker { margin-left: 10px; }
+    #musicUrl { margin-left: 10px; width: 200px; }
+    
+    /* ========= Sidebar & Sections ========= */
     #bestScoreSidebar {
       position: fixed; top: 50%; left: 20px; transform: translateY(-50%);
       background: #fff; border: 2px solid #ddd; padding: 10px; border-radius: 8px;
@@ -56,8 +62,7 @@
     #bestScoreSidebar p { font-size: 16px; font-weight: bold; }
     
     .section {
-      width: 90%; max-width: 600px; margin: 20px 0; padding: 20px;
-      background: #f9f9f9; border: 2px solid #ddd; border-radius: 10px; text-align: center;
+      width: 90%; max-width: 600px; margin: 20px 0; padding: 20px; background: #f9f9f9; border: 2px solid #ddd; border-radius: 10px; text-align: center;
     }
     
     /* ========= Quiz Section ========= */
@@ -66,7 +71,7 @@
     #scoreDisplay, #timerDisplay { margin-top: 10px; font-size: 18px; font-weight: bold; }
     #timerDisplay { color: red; }
     
-    /* ========= Leaderboard ========= */
+    /* ========= Leaderboard & Pagination ========= */
     table { border-collapse: collapse; width: 100%; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     th { background-color: #4CAF50; color: white; }
@@ -77,8 +82,9 @@
     #scoreHistorySection { margin-top: 20px; }
     
     /* ========= Comments Section ========= */
+    #commentsSection { margin-top: 20px; text-align: left; }
     #commentsSection textarea { width: 100%; height: 80px; }
-    .comment { border-bottom: 1px solid #ccc; padding: 8px; text-align: left; }
+    .comment { border-bottom: 1px solid #ccc; padding: 8px; }
     .comment p { margin: 5px 0; }
     
     /* ========= Multiplayer Mode (Placeholder) ========= */
@@ -96,7 +102,13 @@
     #chatInput { flex: 1; padding: 10px; font-size: 14px; border: none; }
     #chatSend { padding: 10px; background: #ff5733; color: white; border: none; cursor: pointer; }
     
-    /* ========= Particle Effects ========= */
+    /* ========= Responsive Adjustments ========= */
+    @media (max-width: 600px) {
+      .btn-container { flex-direction: column; }
+      #bestScoreSidebar { left: 10px; }
+    }
+    
+    /* ========= Particle Effect Styles ========= */
     .particle {
       position: fixed;
       border-radius: 50%;
@@ -108,12 +120,6 @@
       0% { opacity: 1; transform: translate(0px, 0px) scale(1); }
       100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
     }
-    
-    /* ========= Responsive Adjustments ========= */
-    @media (max-width: 600px) {
-      .btn-container { flex-direction: column; }
-      #bestScoreSidebar { left: 10px; }
-    }
   </style>
 </head>
 <body>
@@ -124,7 +130,7 @@
     <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
   </audio>
   
-  <!-- Best Score Sidebar (shows best score and daily streak) -->
+  <!-- Best Score Sidebar -->
   <div id="bestScoreSidebar">
     <h4>Your Best Score</h4>
     <p id="bestScoreValue">0</p>
@@ -161,7 +167,7 @@
   <!-- Fun Fact Generator -->
   <div id="funFact" class="section"></div>
   
-  <!-- Anime Recommendation -->
+  <!-- Anime Recommendation Section -->
   <div class="btn-container">
     <button onclick="getAnime()">Get a Random Anime Recommendation!</button>
   </div>
@@ -183,7 +189,7 @@
   <!-- Trivia Quiz Section -->
   <div id="quizSection" class="section">
     <h3>Trivia Quiz</h3>
-    <!-- Player Info & Settings -->
+    <!-- Player & Settings Input -->
     <div id="playerIntro">
       <input type="text" id="playerName" placeholder="Enter your name">
       <input type="url" id="playerAvatar" placeholder="Avatar URL (optional)">
@@ -194,7 +200,7 @@
       </select>
       <button onclick="startQuiz()">Start Quiz</button>
     </div>
-    <!-- Quiz Game (hidden until quiz starts) -->
+    <!-- Quiz Game -->
     <div id="quizGame" style="display:none;">
       <div id="quizQuestion"></div>
       <div id="quizOptions"></div>
@@ -203,14 +209,14 @@
     </div>
   </div>
   
-  <!-- Statistics Section (shown after finishing quiz) -->
+  <!-- Statistics Section -->
   <div id="statsSection" class="section" style="display:none;">
     <h3>Quiz Statistics</h3>
     <p id="statsSummary"></p>
     <button onclick="shareScore()">Share Your Score</button>
   </div>
   
-  <!-- Leaderboard Section with Pagination -->
+  <!-- Leaderboard Section -->
   <div id="leaderboardSection" class="section">
     <h3>Leaderboard</h3>
     <table id="leaderboardTable">
@@ -236,7 +242,7 @@
     <canvas id="scoreChart" width="400" height="200"></canvas>
   </div>
   
-  <!-- Comments Section -->
+  <!-- Comments & Reactions Section -->
   <div id="commentsSection" class="section">
     <h3>Comments</h3>
     <textarea id="commentInput" placeholder="Leave a comment..."></textarea>
@@ -300,6 +306,7 @@
         particle.style.height = "8px";
         particle.style.left = x + "px";
         particle.style.top = y + "px";
+        // Random translation distances
         particle.style.setProperty("--dx", (Math.random() * 100 - 50) + "px");
         particle.style.setProperty("--dy", (Math.random() * 100 - 50) + "px");
         document.body.appendChild(particle);
@@ -329,7 +336,6 @@
           addScoreToHistory(currentScore);
           renderScoreHistoryChart();
           updateLocalLeaderboard();
-          updateStatsSection();
           resetQuiz();
         }
       }, 1000);
@@ -338,6 +344,7 @@
     /* ========= Quiz Functions ========= */
     function generateQuizQuestions() {
       quizQuestions = [];
+      // Determine math formula based on difficulty (adaptive option)
       let mathFormula, multiplierText;
       if (currentDifficulty === "easy") {
         mathFormula = (i) => i * (i + 1);
@@ -358,8 +365,8 @@
         options.sort(() => Math.random() - 0.5);
         quizQuestions.push({
           category: "math",
-          question: "Math Q" + i + ": What is " + i + " x (" + (currentDifficulty==="easy" ? i+1 : currentDifficulty==="hard" ? i+3 : i+2) + ")?",
-          options: options.map(val => val.toString()),
+          question: "Math Q" + i + ": What is " + i + " x (" + (parseInt(i) + parseInt(multiplierText.split('+')[1])) + ")?",
+          options: options.map(num => num.toString()),
           correct: correctAnswer.toString()
         });
       }
@@ -376,7 +383,7 @@
         { question: "Which is the largest hot desert?", options: ["Sahara", "Gobi", "Kalahari", "Arabian"], correct: "Sahara" },
         { question: "Which country has the most natural lakes?", options: ["Canada", "USA", "Russia", "India"], correct: "Canada" }
       ];
-      // Generate 50 geography questions (cycle through pool)
+      // Generate 50 geography questions (cycling through pool)
       for (let j = 1; j <= 50; j++) {
         geoTotal++;
         let geo = geographyPool[(j - 1) % geographyPool.length];
@@ -393,11 +400,10 @@
     
     function startQuiz() {
       playerName = document.getElementById("playerName").value.trim();
-      if (!playerName) { alert("Please enter your name."); return; }
+      if (!playerName) { alert("Please enter your name to start."); return; }
       localStorage.setItem("playerName", playerName);
       currentDifficulty = document.getElementById("difficultySelect").value;
-      
-      // Daily challenge & streak
+      // Daily challenge & streak check
       let today = formatDate(new Date());
       let storedDate = localStorage.getItem("lastQuizDate_" + playerName);
       if (storedDate === today) {
@@ -407,7 +413,7 @@
         localStorage.setItem("lastQuizDate_" + playerName, today);
         localStorage.setItem("streak_" + playerName, playerStreak);
       }
-      
+      // Reset stats
       correctStreak = 0;
       responseTimes = [];
       mathTotal = 0; mathCorrect = 0; geoTotal = 0; geoCorrect = 0;
@@ -443,9 +449,9 @@
         let btn = document.createElement("button");
         btn.innerText = option;
         btn.onclick = (e) => {
-          // Particle effect from button center
+          // Get mouse click coordinates for particle effect
           let rect = e.target.getBoundingClientRect();
-          triggerParticleEffect(rect.left + rect.width / 2, rect.top);
+          triggerParticleEffect(rect.left + rect.width/2, rect.top);
           answerQuestion(option);
         };
         optionsDiv.appendChild(btn);
@@ -457,30 +463,24 @@
     function answerQuestion(selected) {
       clearInterval(timerInterval);
       let q = quizQuestions[currentQuestionIndex];
-      let responseTime = (Date.now() - startTime) / 1000;
+      let responseTime = (Date.now() - startTime) / 1000; // seconds
       responseTimes.push(responseTime);
-      
-      // Update counts
-      if (q.category === "math") {
-        if (selected === q.correct) mathCorrect++;
-      } else if (q.category === "geography") {
-        if (selected === q.correct) geoCorrect++;
-      }
+      // Count math/geography correct
+      if (q.category === "math") { mathTotal++; if (selected === q.correct) mathCorrect++; }
+      if (q.category === "geography") { geoTotal++; if (selected === q.correct) geoCorrect++; }
       
       if (selected === q.correct) {
         currentScore += 100;
         correctStreak++;
-        // Adaptive difficulty: if 5 correct in a row, then increase difficulty (if not already hard)
-        if (correctStreak >= 5) {
-          if (currentDifficulty === "easy") {
-            currentDifficulty = "medium";
-            alert("Adaptive Bonus! Difficulty increased to MEDIUM!");
-          } else if (currentDifficulty === "medium") {
-            currentDifficulty = "hard";
-            alert("Adaptive Bonus! Difficulty increased to HARD!");
-          } else if (currentDifficulty === "hard") {
-            currentScore += 50; // bonus points at max difficulty
-          }
+        // Adaptive difficulty: if 5 in a row correct, increase difficulty (if not already hard)
+        if (correctStreak >= 5 && currentDifficulty !== "hard") {
+          if (currentDifficulty === "easy") currentDifficulty = "medium";
+          else if (currentDifficulty === "medium") currentDifficulty = "hard";
+          alert("Adaptive Bonus! Difficulty increased to " + currentDifficulty.toUpperCase() + "!");
+          correctStreak = 0;
+        } else if (currentDifficulty === "hard" && correctStreak >= 5) {
+          // Bonus points if already at max
+          currentScore += 50;
           correctStreak = 0;
         }
         updateScoreDisplay();
@@ -514,11 +514,10 @@
     
     /* ========= Statistic Functions ========= */
     function recordStats() {
+      // Store overall stats in localStorage under "stats_<playerName>"
       let stats = {
-        mathTotal: mathTotal,
-        mathCorrect: mathCorrect,
-        geoTotal: geoTotal,
-        geoCorrect: geoCorrect,
+        mathTotal, mathCorrect,
+        geoTotal, geoCorrect,
         avgResponse: (responseTimes.length ? (responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length).toFixed(2) : 0)
       };
       localStorage.setItem("stats_" + playerName, JSON.stringify(stats));
@@ -526,15 +525,14 @@
     
     function updateStatsSection() {
       let stats = JSON.parse(localStorage.getItem("stats_" + playerName)) || {};
-      let streak = localStorage.getItem("streak_" + playerName) || 1;
-      let summary = `Math: ${stats.mathCorrect || 0} / ${stats.mathTotal || 0}<br>
-                     Geography: ${stats.geoCorrect || 0} / ${stats.geoTotal || 0}<br>
-                     Average Response Time: ${stats.avgResponse || 0} s<br>
-                     Daily Streak: ${streak}`;
+      let summary = `Math: ${stats.mathCorrect || 0} out of ${stats.mathTotal || 0}<br>
+      Geography: ${stats.geoCorrect || 0} out of ${stats.geoTotal || 0}<br>
+      Average Response Time: ${stats.avgResponse || 0} s<br>
+      Daily Streak: ${localStorage.getItem("streak_" + playerName) || 1}`;
       document.getElementById("statsSummary").innerHTML = summary;
     }
     
-    /* ========= Score History ========= */
+    /* ========= Score History Chart ========= */
     function addScoreToHistory(score) {
       let history = JSON.parse(localStorage.getItem("history_" + playerName)) || [];
       history.push(score);
@@ -543,32 +541,35 @@
     
     function renderScoreHistoryChart() {
       let history = JSON.parse(localStorage.getItem("history_" + playerName)) || [];
-      const ctx = document.getElementById("scoreChart").getContext("2d");
+      const ctx = document.getElementById('scoreChart').getContext('2d');
       if (window.scoreChart) window.scoreChart.destroy();
       window.scoreChart = new Chart(ctx, {
-        type: "line",
+        type: 'line',
         data: {
           labels: history.map((_, index) => index + 1),
           datasets: [{
-            label: "Score History",
+            label: 'Score History',
             data: history,
             fill: false,
-            borderColor: "blue",
+            borderColor: 'blue',
             tension: 0.1
           }]
         },
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
       });
     }
     
-    /* ========= Local Leaderboard Functions ========= */
+    /* ========= Leaderboard Functions ========= */
     function updateLocalLeaderboard() {
       // Update best score for current player
       let best = localStorage.getItem("best_" + playerName);
       if (!best || currentScore > Number(best)) {
         localStorage.setItem("best_" + playerName, currentScore);
       }
-      // Update overall leaderboard stored under "leaderboard"
+      // Update overall leaderboard array in localStorage under "leaderboard"
       let lb = localStorage.getItem("leaderboard");
       let leaderboard = lb ? JSON.parse(lb) : [];
       let found = false;
@@ -636,7 +637,7 @@
     }
     
     function updateBestScoreSidebar() {
-      if (!playerName) { playerName = localStorage.getItem("playerName") || ""; }
+      if (!playerName) playerName = localStorage.getItem("playerName") || "";
       let best = localStorage.getItem("best_" + playerName);
       document.getElementById("bestScoreValue").innerText = best ? best : "0";
       document.getElementById("streakDisplay").innerText = "Streak: " + (localStorage.getItem("streak_" + playerName) || 1);
@@ -696,16 +697,23 @@
     }
     
     /* ========= Sound Effects ========= */
-    function playSuccessSound() { document.getElementById("successSound").play(); }
-    function playFailureSound() { document.getElementById("failureSound").play(); }
+    function playSuccessSound() {
+      document.getElementById("successSound").play();
+    }
+    function playFailureSound() {
+      document.getElementById("failureSound").play();
+    }
     
-    /* ========= Theme & Music ========= */
-    function toggleMode() { document.body.classList.toggle("dark-mode"); }
+    /* ========= Theme & Music Functions ========= */
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+    }
     function changeTheme() {
       const theme = document.getElementById("themeSelect").value;
       document.body.classList.remove("dark-mode", "anime-theme");
       if (theme === "dark") { document.body.classList.add("dark-mode"); }
       else if (theme === "anime") { document.body.classList.add("anime-theme"); }
+      else { /* light mode */ }
     }
     function changeCustomTheme() {
       const color = document.getElementById("themeColorPicker").value;
@@ -722,7 +730,8 @@
     }
     
     /* ========= Touch Gesture for Leaderboard Pagination ========= */
-    let touchStartX = 0, touchEndX = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
     function handleGesture() {
       if (touchEndX < touchStartX - 30) { nextPage(); }
       if (touchEndX > touchStartX + 30) { prevPage(); }
@@ -734,6 +743,9 @@
       touchEndX = e.changedTouches[0].screenX;
       handleGesture();
     });
+    
+    /* ========= Adaptive Difficulty ========= */
+    // Already integrated inside answerQuestion() via correctStreak
     
     /* ========= Auto Night Mode ========= */
     function autoNightMode() {
@@ -753,14 +765,7 @@
       updateBestScoreSidebar();
       renderScoreHistoryChart();
       renderComments();
-      document.getElementById("funFact").innerText = 
-        ["Octopuses have three hearts.",
-         "Bananas are berries, but strawberries aren't.",
-         "Honey never spoils!",
-         "Japan has over 5 million vending machines!",
-         "A day on Venus is longer than its year.",
-         "There are more stars in the universe than grains of sand on Earth."]
-        [Math.floor(Math.random() * 6)];
+      document.getElementById("funFact").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
     };
   </script>
 </body>
