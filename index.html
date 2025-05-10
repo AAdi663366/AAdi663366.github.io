@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Fun Page – Enhanced</title>
-  <!-- Chart.js for Score History Graph -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Ultimate Fun Page</title>
+  <!-- Chart.js for Score History -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ========= Reset & Global Styles ========= */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg-color: linear-gradient(120deg, #FFEC99, #FFD166, #FFA500);
+    /* Basic Reset & Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+    /* Use CSS variable for custom background color */
     body {
       font-family: Arial, sans-serif;
-      background: var(--bg-color);
+      background: var(--bg-color, linear-gradient(120deg, #FFEC99, #FFD166, #FFA500));
       animation: bgTransition 10s infinite alternate ease-in-out;
       color: #000;
       min-height: 100vh;
@@ -28,119 +30,271 @@
       0% { background-position: left top; }
       100% { background-position: right bottom; }
     }
-    .dark-mode { background: #222; color: #eee; }
-    .anime-theme { background: linear-gradient(120deg, #ff9a9e, #fad0c4); color: #4a4a4a; }
-    
-    /* ========= Header, Buttons, & Inputs ========= */
-    header { text-align: center; margin: 20px 0; }
-    header h1 { font-size: 40px; color: blue; margin-bottom: 10px; }
-    .animated-text { font-size: 28px; color: blue; margin-bottom: 20px; }
+    .dark-mode {
+      background: #222;
+      color: #eee;
+    }
+    .anime-theme {
+      background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+      color: #4a4a4a;
+    }
+    /* Header & Intro */
+    header {
+      text-align: center;
+      margin: 20px 0;
+    }
+    header h1 {
+      font-size: 40px;
+      color: blue;
+      margin-bottom: 10px;
+    }
+    .animated-text {
+      font-size: 28px;
+      color: blue;
+      margin-bottom: 20px;
+    }
+    /* Button Containers */
     .btn-container {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
     }
     a, button {
-      background-color: #ff5733; color: white; padding: 10px 20px;
-      text-decoration: none; border: none; border-radius: 8px;
-      font-size: 16px; transition: all 0.3s ease; cursor: pointer;
+      background-color: #ff5733;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
-    a:hover, button:hover { background-color: #ff3500; transform: scale(1.05); }
-    input[type="text"], input[type="url"], select, input[type="color"] {
-      padding: 8px; font-size: 16px; margin-bottom: 10px;
+    a:hover, button:hover {
+      background-color: #ff3500;
+      transform: scale(1.05);
     }
-    
-    /* ========= Custom Theme & Music Picker ========= */
-    #themeColorPicker { margin-left: 10px; }
-    #musicUrl { margin-left: 10px; width: 200px; }
-    
-    /* ========= Sidebar & Sections ========= */
-    #bestScoreSidebar {
-      position: fixed; top: 50%; left: 20px; transform: translateY(-50%);
-      background: #fff; border: 2px solid #ddd; padding: 10px; border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000; text-align: center;
+    /* Custom Theme Picker Input */
+    #themeColorPicker {
+      margin-left: 10px;
+      padding: 3px;
     }
-    #bestScoreSidebar h4 { margin-bottom: 10px; font-size: 18px; }
-    #bestScoreSidebar p { font-size: 16px; font-weight: bold; }
-    
-    .section {
-      width: 90%; max-width: 600px; margin: 20px 0; padding: 20px; background: #f9f9f9; border: 2px solid #ddd; border-radius: 10px; text-align: center;
+    /* Fun Fact & Anime Recommendation */
+    #funFact, #anime-card {
+      font-size: 20px;
+      margin: 15px;
+      font-weight: bold;
+      text-align: center;
     }
-    
-    /* ========= Quiz Section ========= */
-    #quizQuestion { font-size: 20px; margin-bottom: 10px; min-height: 40px; }
-    #quizOptions button { margin: 5px; padding: 8px 16px; font-size: 16px; }
-    #scoreDisplay, #timerDisplay { margin-top: 10px; font-size: 18px; font-weight: bold; }
-    #timerDisplay { color: red; }
-    
-    /* ========= Leaderboard & Pagination ========= */
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background-color: #4CAF50; color: white; }
-    #leaderboardPagination { margin-top: 10px; }
-    #leaderboardPagination button { margin: 0 5px; }
-    
-    /* ========= Score History Chart ========= */
-    #scoreHistorySection { margin-top: 20px; }
-    
-    /* ========= Comments Section ========= */
-    #commentsSection { margin-top: 20px; text-align: left; }
-    #commentsSection textarea { width: 100%; height: 80px; }
-    .comment { border-bottom: 1px solid #ccc; padding: 8px; }
-    .comment p { margin: 5px 0; }
-    
-    /* ========= Multiplayer Mode (Placeholder) ========= */
-    #multiplayerSection { margin-top: 20px; padding: 15px; background: #e0e0e0; border-radius: 10px; display: none; }
-    
-    /* ========= Chat Bot Section ========= */
+    #anime-card {
+      display: none;
+      background: white;
+      width: 300px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+    }
+    /* Media Container */
+    .media-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      width: 90%;
+      max-width: 1000px;
+      overflow-x: auto;
+    }
+    .media-item {
+      width: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .media-item img,
+    .media-item iframe {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      object-fit: contain;
+    }
+    /* Trivia Quiz Section */
+    #quizSection {
+      width: 90%;
+      max-width: 600px;
+      background: #f9f9f9;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      margin: 20px 0;
+      padding: 20px;
+      text-align: center;
+    }
+    #quizSection input[type="text"], 
+    #quizSection input[type="url"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 70%;
+      margin-bottom: 10px;
+    }
+    #quizSection select {
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    #quizSection button {
+      margin: 10px;
+    }
+    #quizQuestion {
+      font-size: 20px;
+      margin-bottom: 10px;
+      min-height: 40px;
+    }
+    #quizOptions button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+    #scoreDisplay {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #timerDisplay {
+      font-size: 18px;
+      margin-top: 5px;
+      color: red;
+    }
+    /* Leaderboard Section */
+    #leaderboardSection {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+    #leaderboardSection table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    #leaderboardSection th, #leaderboardSection td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    #leaderboardSection th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    /* Pagination for Leaderboard */
+    #leaderboardPagination {
+      margin-top: 10px;
+    }
+    #leaderboardPagination button {
+      margin: 0 5px;
+    }
+    /* Score History Graph Section */
+    #scoreHistorySection {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+    /* Chat Bot Section */
     #chatContainer {
-      position: fixed; bottom: 0; right: 20px; width: 300px; max-height: 400px;
-      background: white; border: 1px solid #ccc; border-radius: 10px 10px 0 0;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3); display: flex; flex-direction: column;
-    }
-    #chatHeader { background: #ff5733; color: white; padding: 10px; text-align: center; border-radius: 10px 10px 0 0; }
-    #chatBody { flex: 1; overflow-y: auto; padding: 10px; font-size: 14px; text-align: left; }
-    #chatInputContainer { display: flex; border-top: 1px solid #ccc; }
-    #chatInput { flex: 1; padding: 10px; font-size: 14px; border: none; }
-    #chatSend { padding: 10px; background: #ff5733; color: white; border: none; cursor: pointer; }
-    
-    /* ========= Responsive Adjustments ========= */
-    @media (max-width: 600px) {
-      .btn-container { flex-direction: column; }
-      #bestScoreSidebar { left: 10px; }
-    }
-    
-    /* ========= Particle Effect Styles ========= */
-    .particle {
       position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-      animation: particleFade 1s forwards;
+      bottom: 0;
+      right: 20px;
+      width: 300px;
+      max-height: 400px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
     }
-    @keyframes particleFade {
-      0% { opacity: 1; transform: translate(0px, 0px) scale(1); }
-      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    #chatHeader {
+      background: #ff5733;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px 10px 0 0;
+    }
+    #chatBody {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    #chatInputContainer {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #chatInput {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      font-size: 14px;
+    }
+    #chatSend {
+      padding: 10px;
+      background: #ff5733;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    /* Best Score Sidebar */
+    #bestScoreSidebar {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 2px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      text-align: center;
+    }
+    #bestScoreSidebar h4 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    #bestScoreSidebar p {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 600px) {
+      .btn-container {
+        flex-direction: column;
+      }
+      .media-container {
+        flex-wrap: wrap;
+      }
+      #bestScoreSidebar {
+        left: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Audio Elements for Sound Effects and Background Music -->
+  <!-- Audio Elements for Sound Effects -->
   <audio id="successSound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
   <audio id="failureSound" src="https://www.soundjay.com/button/beep-05.mp3"></audio>
-  <audio id="bgMusic" autoplay loop style="display:none;">
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-  </audio>
   
   <!-- Best Score Sidebar -->
   <div id="bestScoreSidebar">
     <h4>Your Best Score</h4>
     <p id="bestScoreValue">0</p>
-    <p id="streakDisplay">Streak: 0</p>
   </div>
   
-  <!-- Header & Controls -->
+  <!-- Header & Theme Toggle + Custom Theme Picker -->
   <header>
-    <h1>Welcome to the Ultimate Fun Page! 🎉</h1>
-    <div class="animated-text">Packed with challenges, stats, and fun!</div>
+    <h1>Welcome to the Most Entertaining Page Ever! 🎉</h1>
+    <div class="animated-text">This is the best page in the world</div>
     <div class="btn-container">
       <button onclick="toggleMode()">Toggle Dark Mode</button>
       <select id="themeSelect" onchange="changeTheme()">
@@ -149,9 +303,6 @@
         <option value="anime">Anime Theme</option>
       </select>
       <input type="color" id="themeColorPicker" onchange="changeCustomTheme()" title="Pick a custom background color">
-      <input type="url" id="musicUrl" placeholder="Music URL">
-      <button onclick="setBackgroundMusic()">Set Music</button>
-      <button onclick="showMultiplayer()">Multiplayer Mode</button>
     </div>
   </header>
   
@@ -165,13 +316,13 @@
   </div>
   
   <!-- Fun Fact Generator -->
-  <div id="funFact" class="section"></div>
+  <div id="funFact"></div>
   
   <!-- Anime Recommendation Section -->
   <div class="btn-container">
     <button onclick="getAnime()">Get a Random Anime Recommendation!</button>
   </div>
-  <div id="anime-card" class="section"></div>
+  <div id="anime-card"></div>
   
   <!-- Media Content -->
   <div class="media-container">
@@ -187,12 +338,12 @@
   </div>
   
   <!-- Trivia Quiz Section -->
-  <div id="quizSection" class="section">
+  <div id="quizSection">
     <h3>Trivia Quiz</h3>
-    <!-- Player & Settings Input -->
+    <!-- Player Intro with Avatar & Difficulty Selection -->
     <div id="playerIntro">
-      <input type="text" id="playerName" placeholder="Enter your name">
-      <input type="url" id="playerAvatar" placeholder="Avatar URL (optional)">
+      <input type="text" id="playerName" placeholder="Enter your name" />
+      <input type="url" id="playerAvatar" placeholder="Enter avatar URL (optional)" />
       <select id="difficultySelect">
         <option value="easy">Easy</option>
         <option value="medium" selected>Medium</option>
@@ -200,7 +351,7 @@
       </select>
       <button onclick="startQuiz()">Start Quiz</button>
     </div>
-    <!-- Quiz Game -->
+    <!-- Quiz Game (hidden until quiz starts) -->
     <div id="quizGame" style="display:none;">
       <div id="quizQuestion"></div>
       <div id="quizOptions"></div>
@@ -209,15 +360,8 @@
     </div>
   </div>
   
-  <!-- Statistics Section -->
-  <div id="statsSection" class="section" style="display:none;">
-    <h3>Quiz Statistics</h3>
-    <p id="statsSummary"></p>
-    <button onclick="shareScore()">Share Your Score</button>
-  </div>
-  
-  <!-- Leaderboard Section -->
-  <div id="leaderboardSection" class="section">
+  <!-- Leaderboard Section with Pagination -->
+  <div id="leaderboardSection">
     <h3>Leaderboard</h3>
     <table id="leaderboardTable">
       <thead>
@@ -225,7 +369,7 @@
           <th>Rank</th>
           <th>Avatar</th>
           <th>Name</th>
-          <th>Best Score</th>
+          <th>Score</th>
         </tr>
       </thead>
       <tbody id="leaderboardBody"></tbody>
@@ -236,25 +380,10 @@
     </div>
   </div>
   
-  <!-- Score History Chart Section -->
-  <div id="scoreHistorySection" class="section">
+  <!-- Score History Graph Section -->
+  <div id="scoreHistorySection">
     <h3>Your Score History</h3>
     <canvas id="scoreChart" width="400" height="200"></canvas>
-  </div>
-  
-  <!-- Comments & Reactions Section -->
-  <div id="commentsSection" class="section">
-    <h3>Comments</h3>
-    <textarea id="commentInput" placeholder="Leave a comment..."></textarea>
-    <button onclick="addComment()">Submit Comment</button>
-    <div id="commentsList"></div>
-  </div>
-  
-  <!-- Multiplayer Mode Section (Placeholder) -->
-  <div id="multiplayerSection" class="section">
-    <h3>Multiplayer Mode</h3>
-    <p>Coming Soon! Stay tuned for real-time challenges.</p>
-    <button onclick="hideMultiplayer()">Close Multiplayer</button>
   </div>
   
   <!-- Live Chat Bot Section -->
@@ -262,283 +391,33 @@
     <div id="chatHeader">Chat with Us!</div>
     <div id="chatBody"></div>
     <div id="chatInputContainer">
-      <input id="chatInput" type="text" placeholder="Type your message...">
+      <input id="chatInput" type="text" placeholder="Type your message..." />
       <button id="chatSend" onclick="sendMessage()">Send</button>
     </div>
   </div>
   
   <script>
-    /* ========= Global Variables ========= */
+    /* -----------------------------
+       Global Variables & Setup
+    ------------------------------*/
     let quizQuestions = [];
     let currentQuestionIndex = 0;
     let currentScore = 0;
     let playerName = "";
-    let playerStreak = 0;
-    let correctStreak = 0;
-    let lastQuizDate = "";
-    let responseTimes = [];
-    let mathTotal = 0, mathCorrect = 0, geoTotal = 0, geoCorrect = 0;
-    let startTime = 0;
     let timerInterval;
     let timeLeft = 0;
     let currentDifficulty = "medium";
-    
-    // Leaderboard pagination
     const leaderboardPageSize = 10;
     let leaderboardPage = 0;
     
-    /* ========= Utility Functions ========= */
-    // Format date as YYYY-MM-DD
-    function formatDate(date) {
-      let d = date.getDate().toString().padStart(2, '0');
-      let m = (date.getMonth() + 1).toString().padStart(2, '0');
-      let y = date.getFullYear();
-      return `${y}-${m}-${d}`;
-    }
-    
-    // Particle effect on correct answer
-    function triggerParticleEffect(x, y) {
-      for (let i = 0; i < 10; i++) {
-        const particle = document.createElement("div");
-        particle.className = "particle";
-        particle.style.background = "gold";
-        particle.style.width = "8px";
-        particle.style.height = "8px";
-        particle.style.left = x + "px";
-        particle.style.top = y + "px";
-        // Random translation distances
-        particle.style.setProperty("--dx", (Math.random() * 100 - 50) + "px");
-        particle.style.setProperty("--dy", (Math.random() * 100 - 50) + "px");
-        document.body.appendChild(particle);
-        setTimeout(() => { particle.remove(); }, 1000);
-      }
-    }
-    
-    /* ========= Timer Functions ========= */
-    function getTimerDuration() {
-      if (currentDifficulty === "easy") return 15;
-      if (currentDifficulty === "hard") return 5;
-      return 10;
-    }
-    
-    function startTimer() {
-      clearInterval(timerInterval);
-      timeLeft = getTimerDuration();
-      document.getElementById("timerDisplay").innerText = "Time Left: " + timeLeft + "s";
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById("timerDisplay").innerText = "Time Left: " + timeLeft + "s";
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          playFailureSound();
-          alert("Time's up! Your final score: " + currentScore);
-          recordStats();
-          addScoreToHistory(currentScore);
-          renderScoreHistoryChart();
-          updateLocalLeaderboard();
-          resetQuiz();
-        }
-      }, 1000);
-    }
-    
-    /* ========= Quiz Functions ========= */
-    function generateQuizQuestions() {
-      quizQuestions = [];
-      // Determine math formula based on difficulty (adaptive option)
-      let mathFormula, multiplierText;
-      if (currentDifficulty === "easy") {
-        mathFormula = (i) => i * (i + 1);
-        multiplierText = "i+1";
-      } else if (currentDifficulty === "hard") {
-        mathFormula = (i) => i * (i + 3);
-        multiplierText = "i+3";
-      } else {
-        mathFormula = (i) => i * (i + 2);
-        multiplierText = "i+2";
-      }
-      // Generate 50 math questions
-      for (let i = 1; i <= 50; i++) {
-        mathTotal++;
-        let correctAnswer = mathFormula(i);
-        let options = [correctAnswer, correctAnswer + 2, correctAnswer - 2, correctAnswer + 4];
-        if (options[2] < 0) options[2] = correctAnswer + 1;
-        options.sort(() => Math.random() - 0.5);
-        quizQuestions.push({
-          category: "math",
-          question: "Math Q" + i + ": What is " + i + " x (" + (parseInt(i) + parseInt(multiplierText.split('+')[1])) + ")?",
-          options: options.map(num => num.toString()),
-          correct: correctAnswer.toString()
-        });
-      }
-      // Pool of 10 geography questions
-      const geographyPool = [
-        { question: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Madrid"], correct: "Paris" },
-        { question: "Which country has the largest population?", options: ["China", "India", "USA", "Indonesia"], correct: "China" },
-        { question: "Which continent is the Sahara Desert in?", options: ["Africa", "Asia", "Australia", "South America"], correct: "Africa" },
-        { question: "What is the longest river?", options: ["Nile", "Amazon", "Yangtze", "Mississippi"], correct: "Nile" },
-        { question: "Which US state is the 'Sunshine State'?", options: ["Florida", "California", "Texas", "Arizona"], correct: "Florida" },
-        { question: "Mount Everest is on the border of which countries?", options: ["Nepal & China", "India & China", "Nepal & India", "Bhutan & China"], correct: "Nepal & China" },
-        { question: "Which country is famous for fjords?", options: ["Norway", "Sweden", "Finland", "Denmark"], correct: "Norway" },
-        { question: "What is the smallest country by area?", options: ["Vatican City", "Monaco", "Nauru", "San Marino"], correct: "Vatican City" },
-        { question: "Which is the largest hot desert?", options: ["Sahara", "Gobi", "Kalahari", "Arabian"], correct: "Sahara" },
-        { question: "Which country has the most natural lakes?", options: ["Canada", "USA", "Russia", "India"], correct: "Canada" }
-      ];
-      // Generate 50 geography questions (cycling through pool)
-      for (let j = 1; j <= 50; j++) {
-        geoTotal++;
-        let geo = geographyPool[(j - 1) % geographyPool.length];
-        quizQuestions.push({
-          category: "geography",
-          question: "Geography Q" + j + ": " + geo.question,
-          options: geo.options.slice(),
-          correct: geo.correct
-        });
-      }
-      // Shuffle the 100 questions
-      quizQuestions.sort(() => Math.random() - 0.5);
-    }
-    
-    function startQuiz() {
-      playerName = document.getElementById("playerName").value.trim();
-      if (!playerName) { alert("Please enter your name to start."); return; }
-      localStorage.setItem("playerName", playerName);
-      currentDifficulty = document.getElementById("difficultySelect").value;
-      // Daily challenge & streak check
-      let today = formatDate(new Date());
-      let storedDate = localStorage.getItem("lastQuizDate_" + playerName);
-      if (storedDate === today) {
-        playerStreak = Number(localStorage.getItem("streak_" + playerName)) || 0;
-      } else {
-        playerStreak = 1;
-        localStorage.setItem("lastQuizDate_" + playerName, today);
-        localStorage.setItem("streak_" + playerName, playerStreak);
-      }
-      // Reset stats
-      correctStreak = 0;
-      responseTimes = [];
-      mathTotal = 0; mathCorrect = 0; geoTotal = 0; geoCorrect = 0;
-      generateQuizQuestions();
-      currentQuestionIndex = 0;
-      currentScore = 0;
-      document.getElementById("playerIntro").style.display = "none";
-      document.getElementById("quizGame").style.display = "block";
-      document.getElementById("statsSection").style.display = "none";
-      updateScoreDisplay();
-      displayQuestion();
-    }
-    
-    function displayQuestion() {
-      clearInterval(timerInterval);
-      if (currentQuestionIndex >= quizQuestions.length) {
-        playSuccessSound();
-        alert("Congratulations, " + playerName + "! You completed the quiz!");
-        recordStats();
-        addScoreToHistory(currentScore);
-        renderScoreHistoryChart();
-        updateLocalLeaderboard();
-        updateStatsSection();
-        document.getElementById("statsSection").style.display = "block";
-        resetQuiz();
-        return;
-      }
-      let q = quizQuestions[currentQuestionIndex];
-      document.getElementById("quizQuestion").innerText = q.question;
-      let optionsDiv = document.getElementById("quizOptions");
-      optionsDiv.innerHTML = "";
-      q.options.forEach(option => {
-        let btn = document.createElement("button");
-        btn.innerText = option;
-        btn.onclick = (e) => {
-          // Get mouse click coordinates for particle effect
-          let rect = e.target.getBoundingClientRect();
-          triggerParticleEffect(rect.left + rect.width/2, rect.top);
-          answerQuestion(option);
-        };
-        optionsDiv.appendChild(btn);
-      });
-      startTime = Date.now();
-      startTimer();
-    }
-    
-    function answerQuestion(selected) {
-      clearInterval(timerInterval);
-      let q = quizQuestions[currentQuestionIndex];
-      let responseTime = (Date.now() - startTime) / 1000; // seconds
-      responseTimes.push(responseTime);
-      // Count math/geography correct
-      if (q.category === "math") { mathTotal++; if (selected === q.correct) mathCorrect++; }
-      if (q.category === "geography") { geoTotal++; if (selected === q.correct) geoCorrect++; }
-      
-      if (selected === q.correct) {
-        currentScore += 100;
-        correctStreak++;
-        // Adaptive difficulty: if 5 in a row correct, increase difficulty (if not already hard)
-        if (correctStreak >= 5 && currentDifficulty !== "hard") {
-          if (currentDifficulty === "easy") currentDifficulty = "medium";
-          else if (currentDifficulty === "medium") currentDifficulty = "hard";
-          alert("Adaptive Bonus! Difficulty increased to " + currentDifficulty.toUpperCase() + "!");
-          correctStreak = 0;
-        } else if (currentDifficulty === "hard" && correctStreak >= 5) {
-          // Bonus points if already at max
-          currentScore += 50;
-          correctStreak = 0;
-        }
-        updateScoreDisplay();
-        currentQuestionIndex++;
-        displayQuestion();
-      } else {
-        playFailureSound();
-        alert("Wrong answer! Your final score: " + currentScore);
-        recordStats();
-        addScoreToHistory(currentScore);
-        renderScoreHistoryChart();
-        updateLocalLeaderboard();
-        updateStatsSection();
-        resetQuiz();
-      }
-    }
-    
-    function updateScoreDisplay() {
-      document.getElementById("scoreDisplay").innerText = "Current Score: " + currentScore;
-      updateBestScoreSidebar();
-    }
-    
-    function resetQuiz() {
-      clearInterval(timerInterval);
-      currentQuestionIndex = 0;
-      currentScore = 0;
-      updateScoreDisplay();
-      document.getElementById("quizGame").style.display = "none";
-      document.getElementById("playerIntro").style.display = "block";
-    }
-    
-    /* ========= Statistic Functions ========= */
-    function recordStats() {
-      // Store overall stats in localStorage under "stats_<playerName>"
-      let stats = {
-        mathTotal, mathCorrect,
-        geoTotal, geoCorrect,
-        avgResponse: (responseTimes.length ? (responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length).toFixed(2) : 0)
-      };
-      localStorage.setItem("stats_" + playerName, JSON.stringify(stats));
-    }
-    
-    function updateStatsSection() {
-      let stats = JSON.parse(localStorage.getItem("stats_" + playerName)) || {};
-      let summary = `Math: ${stats.mathCorrect || 0} out of ${stats.mathTotal || 0}<br>
-      Geography: ${stats.geoCorrect || 0} out of ${stats.geoTotal || 0}<br>
-      Average Response Time: ${stats.avgResponse || 0} s<br>
-      Daily Streak: ${localStorage.getItem("streak_" + playerName) || 1}`;
-      document.getElementById("statsSummary").innerHTML = summary;
-    }
-    
-    /* ========= Score History Chart ========= */
+    // Add score to the player's history stored in localStorage (an array of scores)
     function addScoreToHistory(score) {
       let history = JSON.parse(localStorage.getItem("history_" + playerName)) || [];
       history.push(score);
       localStorage.setItem("history_" + playerName, JSON.stringify(history));
     }
     
+    // Render Score History Chart using Chart.js
     function renderScoreHistoryChart() {
       let history = JSON.parse(localStorage.getItem("history_" + playerName)) || [];
       const ctx = document.getElementById('scoreChart').getContext('2d');
@@ -562,7 +441,173 @@
       });
     }
     
-    /* ========= Leaderboard Functions ========= */
+    // Timer durations (seconds) based on difficulty level
+    function getTimerDuration() {
+      if (currentDifficulty === "easy") return 15;
+      if (currentDifficulty === "hard") return 5;
+      return 10; // medium
+    }
+    
+    // Generate Quiz Questions; math formula varies with difficulty:
+    // Easy: i x (i+1), Medium: i x (i+2), Hard: i x (i+3)
+    function generateQuizQuestions() {
+      quizQuestions = [];
+      let mathFormula;
+      let multiplier;
+      if (currentDifficulty === "easy") { 
+        mathFormula = (i) => i * (i + 1); 
+        multiplier = "i+1";
+      } else if (currentDifficulty === "hard") { 
+        mathFormula = (i) => i * (i + 3); 
+        multiplier = "i+3";
+      } else {  
+        mathFormula = (i) => i * (i + 2);
+        multiplier = "i+2";
+      }
+      // Generate 50 math questions
+      for (let i = 1; i <= 50; i++) {
+        let correctAnswer = mathFormula(i);
+        let optionA = correctAnswer;
+        let optionB = correctAnswer + 2; 
+        let optionC = correctAnswer - 2; 
+        let optionD = correctAnswer + 4;
+        if (optionC < 0) optionC = correctAnswer + 1;
+        let options = [optionA, optionB, optionC, optionD];
+        options.sort(() => Math.random() - 0.5);
+        quizQuestions.push({
+          question: "Math Question " + i + ": What is " + i + " x (" + (currentDifficulty==="easy" ? i+1 : currentDifficulty==="hard" ? i+3 : i+2) + ")?",
+          options: options.map(opt => opt.toString()),
+          correct: correctAnswer.toString()
+        });
+      }
+      // Pool of 10 Geography Questions
+      const geographyPool = [
+        { question: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Madrid"], correct: "Paris" },
+        { question: "Which country has the largest population in the world?", options: ["China", "India", "USA", "Indonesia"], correct: "China" },
+        { question: "Which continent is the Sahara Desert located on?", options: ["Africa", "Asia", "Australia", "South America"], correct: "Africa" },
+        { question: "What is the longest river in the world?", options: ["Nile", "Amazon", "Yangtze", "Mississippi"], correct: "Nile" },
+        { question: "Which US state is known as the 'Sunshine State'?", options: ["Florida", "California", "Texas", "Arizona"], correct: "Florida" },
+        { question: "Mount Everest is located on the border of which two countries?", options: ["Nepal & China", "India & China", "Nepal & India", "Bhutan & China"], correct: "Nepal & China" },
+        { question: "Which country is famous for its fjords?", options: ["Norway", "Sweden", "Finland", "Denmark"], correct: "Norway" },
+        { question: "What is the smallest country in the world by area?", options: ["Vatican City", "Monaco", "Nauru", "San Marino"], correct: "Vatican City" },
+        { question: "Which desert is the largest hot desert in the world?", options: ["Sahara", "Gobi", "Kalahari", "Arabian"], correct: "Sahara" },
+        { question: "Which country has the most natural lakes?", options: ["Canada", "USA", "Russia", "India"], correct: "Canada" }
+      ];
+      // Generate 50 Geography Questions by cycling through the pool
+      for (let j = 1; j <= 50; j++) {
+        let geo = geographyPool[(j - 1) % geographyPool.length];
+        quizQuestions.push({
+          question: "Geography Question " + j + ": " + geo.question,
+          options: geo.options.slice(),
+          correct: geo.correct
+        });
+      }
+      // Shuffle all 100 questions
+      quizQuestions.sort(() => Math.random() - 0.5);
+    }
+    
+    // Timer function: starts a countdown for each question
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = getTimerDuration();
+      document.getElementById("timerDisplay").innerText = "Time Left: " + timeLeft + "s";
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timerDisplay").innerText = "Time Left: " + timeLeft + "s";
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          playFailureSound();
+          alert("Time's up! Your final score: " + currentScore);
+          addScoreToHistory(currentScore);
+          renderScoreHistoryChart();
+          updateLocalLeaderboard();
+          resetQuiz();
+        }
+      }, 1000);
+    }
+    
+    function startQuiz() {
+      playerName = document.getElementById("playerName").value.trim();
+      if (!playerName) {
+        alert("Please enter your name to start the quiz.");
+        return;
+      }
+      // Save player name in localStorage
+      localStorage.setItem("playerName", playerName);
+      currentDifficulty = document.getElementById("difficultySelect").value;
+      generateQuizQuestions();
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      document.getElementById("playerIntro").style.display = "none";
+      document.getElementById("quizGame").style.display = "block";
+      updateScoreDisplay();
+      displayQuestion();
+      startTimer();
+      updateBestScoreSidebar();
+    }
+    
+    function displayQuestion() {
+      clearInterval(timerInterval);
+      if (currentQuestionIndex >= quizQuestions.length) {
+        playSuccessSound();
+        alert("Congratulations, " + playerName + "! You answered all questions!");
+        addScoreToHistory(currentScore);
+        renderScoreHistoryChart();
+        updateLocalLeaderboard();
+        resetQuiz();
+        return;
+      }
+      let q = quizQuestions[currentQuestionIndex];
+      document.getElementById("quizQuestion").innerText = q.question;
+      let optionsDiv = document.getElementById("quizOptions");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(option => {
+        let btn = document.createElement("button");
+        btn.innerText = option;
+        btn.onclick = function() { answerQuestion(option); };
+        optionsDiv.appendChild(btn);
+      });
+      startTimer();
+    }
+    
+    function answerQuestion(selected) {
+      clearInterval(timerInterval);
+      let q = quizQuestions[currentQuestionIndex];
+      if (selected === q.correct) {
+        currentScore += 100;
+        // Play success sound if new best score
+        let best = localStorage.getItem("best_" + playerName);
+        if (!best || currentScore > Number(best)) {
+          playSuccessSound();
+        }
+        currentQuestionIndex++;
+        updateScoreDisplay();
+        displayQuestion();
+      } else {
+        playFailureSound();
+        alert("Wrong answer! Your final score: " + currentScore);
+        addScoreToHistory(currentScore);
+        renderScoreHistoryChart();
+        updateLocalLeaderboard();
+        resetQuiz();
+      }
+    }
+    
+    function updateScoreDisplay() {
+      document.getElementById("scoreDisplay").innerText = "Current Score: " + currentScore;
+      updateBestScoreSidebar();
+    }
+    
+    function resetQuiz() {
+      clearInterval(timerInterval);
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      updateScoreDisplay();
+      document.getElementById("quizGame").style.display = "none";
+      document.getElementById("playerIntro").style.display = "block";
+    }
+    
+    // Local Leaderboard functions (all stored in localStorage)
     function updateLocalLeaderboard() {
       // Update best score for current player
       let best = localStorage.getItem("best_" + playerName);
@@ -584,8 +629,13 @@
         }
       }
       if (!found) {
-        leaderboard.push({ name: playerName, score: currentScore, avatar: document.getElementById("playerAvatar").value.trim() || "" });
+        leaderboard.push({ 
+          name: playerName, 
+          score: currentScore, 
+          avatar: document.getElementById("playerAvatar").value.trim() || "" 
+        });
       }
+      // Sort descending by score
       leaderboard.sort((a, b) => b.score - a.score);
       localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
       renderLeaderboard();
@@ -595,11 +645,13 @@
     function renderLeaderboard() {
       let lb = localStorage.getItem("leaderboard");
       let leaderboard = lb ? JSON.parse(lb) : [];
+      // Pagination: show only 10 per page
       let start = leaderboardPage * leaderboardPageSize;
-      let paged = leaderboard.slice(start, start + leaderboardPageSize);
+      let end = start + leaderboardPageSize;
+      let pagedLeaderboard = leaderboard.slice(start, end);
       let leaderboardBody = document.getElementById("leaderboardBody");
       leaderboardBody.innerHTML = "";
-      paged.forEach((entry, index) => {
+      pagedLeaderboard.forEach((entry, index) => {
         let row = document.createElement("tr");
         let rankCell = document.createElement("td");
         rankCell.innerText = start + index + 1;
@@ -627,76 +679,154 @@
     }
     
     function prevPage() {
-      if (leaderboardPage > 0) { leaderboardPage--; renderLeaderboard(); }
+      if (leaderboardPage > 0) {
+        leaderboardPage--;
+        renderLeaderboard();
+      }
     }
     
     function nextPage() {
       let lb = localStorage.getItem("leaderboard");
       let leaderboard = lb ? JSON.parse(lb) : [];
-      if ((leaderboardPage + 1) * leaderboardPageSize < leaderboard.length) { leaderboardPage++; renderLeaderboard(); }
+      if ((leaderboardPage + 1) * leaderboardPageSize < leaderboard.length) {
+        leaderboardPage++;
+        renderLeaderboard();
+      }
     }
     
     function updateBestScoreSidebar() {
-      if (!playerName) playerName = localStorage.getItem("playerName") || "";
+      if (!playerName) {
+        playerName = localStorage.getItem("playerName") || "";
+      }
       let best = localStorage.getItem("best_" + playerName);
       document.getElementById("bestScoreValue").innerText = best ? best : "0";
-      document.getElementById("streakDisplay").innerText = "Streak: " + (localStorage.getItem("streak_" + playerName) || 1);
     }
     
-    /* ========= Comments System ========= */
-    function addComment() {
-      let commentText = document.getElementById("commentInput").value.trim();
-      if (!commentText) return;
-      let comments = JSON.parse(localStorage.getItem("comments")) || [];
-      comments.push({
-        name: playerName,
-        text: commentText,
-        timestamp: new Date().toISOString(),
-        likes: 0
-      });
-      localStorage.setItem("comments", JSON.stringify(comments));
-      document.getElementById("commentInput").value = "";
-      renderComments();
+    // Fun Fact Generator
+    const funFacts = [
+      "Octopuses have three hearts.",
+      "Bananas are berries, but strawberries aren't.",
+      "Honey never spoils!",
+      "Japan has over 5 million vending machines!",
+      "A day on Venus is longer than its year.",
+      "There are more stars in the universe than grains of sand on Earth."
+    ];
+    document.getElementById("funFact").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
+    
+    // Anime Recommendation Function
+    function getAnime() {
+      let animeList = [];
+      const realAnimeList = [
+        "Naruto 🍥", 
+        "Attack on Titan ⚔️", 
+        "One Piece ☠️", 
+        "Death Note 📖", 
+        "Demon Slayer 🔥", 
+        "Jujutsu Kaisen 👊",
+        "Cowboy Bebop 🚀", 
+        "Hunter x Hunter 🏹",
+        "Steins;Gate ⏳", 
+        "My Hero Academia 🦸‍♂️", 
+        "Dragon Ball Z 🔥",
+        "Bleach",
+        "Fullmetal Alchemist", 
+        "One Punch Man", 
+        "Tokyo Ghoul", 
+        "Code Geass", 
+        "Gurren Lagann", 
+        "Angel Beats",
+        "Your Lie in April", 
+        "Fruits Basket", 
+        "Black Clover", 
+        "Re:Zero", 
+        "Mob Psycho 100", 
+        "Haikyuu!!", 
+        "Kaguya-sama: Love is War", 
+        "Vinland Saga", 
+        "JoJo's Bizarre Adventure", 
+        "Fate/Zero", 
+        "The Promised Neverland", 
+        "Mushoku Tensei", 
+        "Gintama", 
+        "Erased", 
+        "Noragami"
+      ];
+      while (animeList.length < 500) {
+        animeList = animeList.concat(realAnimeList);
+      }
+      const randomAnime = animeList[Math.floor(Math.random() * animeList.length)];
+      const animeCard = document.getElementById("anime-card");
+      animeCard.innerText = "✨ You should watch: " + randomAnime + "!";
+      animeCard.style.display = "block";
     }
     
-    function renderComments() {
-      let comments = JSON.parse(localStorage.getItem("comments")) || [];
-      let container = document.getElementById("commentsList");
-      container.innerHTML = "";
-      comments.forEach((cm, index) => {
-        let div = document.createElement("div");
-        div.className = "comment";
-        div.innerHTML = `<p><strong>${cm.name}</strong> (${new Date(cm.timestamp).toLocaleString()}):</p>
-                         <p>${cm.text}</p>
-                         <p>Likes: ${cm.likes} <button onclick="likeComment(${index})">Like</button></p>`;
-        container.appendChild(div);
-      });
+    // Chat Bot Functionality
+    function getBotResponse(message) {
+      const lowerCaseMsg = message.toLowerCase();
+      if (lowerCaseMsg.includes("hi") || lowerCaseMsg.includes("hello")) {
+        return "Hello there! How can I brighten your day?";
+      } else if (lowerCaseMsg.includes("how are you")) {
+        return "I'm just a program, but I'm here and ready to chat!";
+      } else if (lowerCaseMsg.includes("bye")) {
+        return "Goodbye! Hope to chat with you again soon!";
+      } else if (lowerCaseMsg.includes("thank")) {
+        return "You're welcome! Happy to help.";
+      } else if (lowerCaseMsg.includes("your name")) {
+        return "I am your AI companion—here to spark interesting conversations!";
+      } else if (lowerCaseMsg.includes("what do you think")) {
+        return "That's a thought-provoking query. I love exploring different perspectives!";
+      } else {
+        const genericResponses = [
+          "That's certainly interesting!",
+          "Wow, tell me more about that.",
+          "Hmm, I hadn't thought of it that way. Please elaborate!",
+          "Fascinating — I appreciate your insight!",
+          "Really? I'd love to dive deeper into that."
+        ];
+        return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+      }
     }
     
-    function likeComment(idx) {
-      let comments = JSON.parse(localStorage.getItem("comments")) || [];
-      comments[idx].likes++;
-      localStorage.setItem("comments", JSON.stringify(comments));
-      renderComments();
+    function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (message === "") return;
+      appendChat("You: " + message);
+      input.value = "";
+      setTimeout(() => {
+        const botResponse = getBotResponse(message);
+        appendChat("Bot: " + botResponse);
+      }, 1000);
     }
     
-    /* ========= Multiplayer Mode (Placeholder) ========= */
-    function showMultiplayer() {
-      document.getElementById("multiplayerSection").style.display = "block";
-    }
-    function hideMultiplayer() {
-      document.getElementById("multiplayerSection").style.display = "none";
-    }
-    
-    /* ========= Social Sharing ========= */
-    function shareScore() {
-      let best = localStorage.getItem("best_" + playerName) || 0;
-      let text = `I just scored ${best} points on Ultimate Fun Page! Can you beat me?`;
-      let url = encodeURIComponent(window.location.href);
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+    function appendChat(msg) {
+      const chatBody = document.getElementById("chatBody");
+      const para = document.createElement("p");
+      para.innerText = msg;
+      chatBody.appendChild(para);
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
     
-    /* ========= Sound Effects ========= */
+    // Theme Functions
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+    function changeTheme() {
+      const theme = document.getElementById("themeSelect").value;
+      document.body.classList.remove("dark-mode", "anime-theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "anime") {
+        document.body.classList.add("anime-theme");
+      }
+    }
+    function changeCustomTheme() {
+      const color = document.getElementById("themeColorPicker").value;
+      document.body.style.setProperty("--bg-color", color);
+      localStorage.setItem("customBgColor", color);
+    }
+    
+    // Play sound effects
     function playSuccessSound() {
       document.getElementById("successSound").play();
     }
@@ -704,67 +834,19 @@
       document.getElementById("failureSound").play();
     }
     
-    /* ========= Theme & Music Functions ========= */
-    function toggleMode() {
-      document.body.classList.toggle("dark-mode");
-    }
-    function changeTheme() {
-      const theme = document.getElementById("themeSelect").value;
-      document.body.classList.remove("dark-mode", "anime-theme");
-      if (theme === "dark") { document.body.classList.add("dark-mode"); }
-      else if (theme === "anime") { document.body.classList.add("anime-theme"); }
-      else { /* light mode */ }
-    }
-    function changeCustomTheme() {
-      const color = document.getElementById("themeColorPicker").value;
-      document.body.style.setProperty("--bg-color", color);
-      localStorage.setItem("customBgColor", color);
-    }
-    function setBackgroundMusic() {
-      let url = document.getElementById("musicUrl").value.trim();
-      if (url) {
-        let audio = document.getElementById("bgMusic");
-        audio.src = url;
-        audio.load();
-      }
-    }
-    
-    /* ========= Touch Gesture for Leaderboard Pagination ========= */
-    let touchStartX = 0;
-    let touchEndX = 0;
-    function handleGesture() {
-      if (touchEndX < touchStartX - 30) { nextPage(); }
-      if (touchEndX > touchStartX + 30) { prevPage(); }
-    }
-    document.getElementById("leaderboardSection").addEventListener("touchstart", e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-    document.getElementById("leaderboardSection").addEventListener("touchend", e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleGesture();
-    });
-    
-    /* ========= Adaptive Difficulty ========= */
-    // Already integrated inside answerQuestion() via correctStreak
-    
-    /* ========= Auto Night Mode ========= */
-    function autoNightMode() {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add("dark-mode");
-      }
-    }
-    
-    /* ========= On Page Load ========= */
+    // On page load, load custom theme and saved name; render leaderboard & score history chart
     window.onload = function() {
-      autoNightMode();
       let storedColor = localStorage.getItem("customBgColor");
-      if (storedColor) { document.body.style.setProperty("--bg-color", storedColor); }
+      if (storedColor) {
+        document.body.style.setProperty("--bg-color", storedColor);
+      }
       let storedName = localStorage.getItem("playerName");
-      if (storedName) { playerName = storedName; }
+      if (storedName) {
+        playerName = storedName;
+      }
       renderLeaderboard();
       updateBestScoreSidebar();
       renderScoreHistoryChart();
-      renderComments();
       document.getElementById("funFact").innerText = funFacts[Math.floor(Math.random() * funFacts.length)];
     };
   </script>
